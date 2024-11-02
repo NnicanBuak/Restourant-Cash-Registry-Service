@@ -79,7 +79,7 @@ class StopList(db.Model):
     date_added = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product", back_populates="stop_list")
-    location = relationship("LocationInfo", back_populates="stop_lists")
+    location = relationship("Location", back_populates="stop_lists")
     employee = relationship("Employee", back_populates="stop_list")
 
 
@@ -95,7 +95,7 @@ class StopListHistory(db.Model):
     datetime = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product")
-    location = relationship("LocationInfo", back_populates="stop_list_history")
+    location = relationship("Location", back_populates="stop_list_history")
     employee = relationship("Employee", back_populates="stop_list_history")
 
 
