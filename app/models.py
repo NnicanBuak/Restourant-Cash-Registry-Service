@@ -25,17 +25,12 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
     locations = relationship(
-        "Location", secondary="user_location", secondary="user_location", back_populates="users"
+        "Location",
+        secondary="user_location",
+        back_populates="users",
+        foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
+        cascade="all, delete-orphan",
     )
-
-    @property
-    def accessible_locations(self):
-        if self.is_admin:
-            return Location.query.all()
-        elif self.is_manager:
-            return self.locations
-        else:
-            return [self.assigned_location] if self.assigned_location else []
 
 
 class Location(db.Model):
@@ -46,7 +41,14 @@ class Location(db.Model):
     tax_id = Column(String, nullable=False)
     address = Column(String, nullable=False)
 
-    users = relationship("User", secondary="user_location", back_populates="locations")
+    users = relationship(
+        "User",
+        secondary="user_location",
+        back_populates="locations",
+        foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
+    )
+    stop_list = relationship("StopList", back_populates="location", cascade="all, delete-orphan")
+    stop_list_history = relationship("StopListHistory", back_populates="location", cascade="all, delete-orphan")
 
 
 class UserLocation(db.Model):
@@ -64,8 +66,8 @@ class Product(db.Model):
     category = Column(String, nullable=False)
     price = Column(Float(asdecimal=True), nullable=False)
 
-    stop_list = relationship("StopList", back_populates="product")
-    purchase_items = relationship("PurchaseItem", back_populates="product")
+    stop_list = relationship("StopList", cascade="all, delete-orphan")
+    purchase_items = relationship("PurchaseItem")
 
 
 class StopList(db.Model):
@@ -95,8 +97,8 @@ class StopListHistory(db.Model):
     datetime = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product")
-    location = relationship("Location", back_populates="stop_list_history")
-    employee = relationship("Employee", back_populates="stop_list_history")
+    location = relationship("Location")
+    employee = relationship("Employee")
 
 
 class Customer(db.Model):
@@ -112,7 +114,7 @@ class Customer(db.Model):
     discount = Column(Float(asdecimal=True), default=0)
     note = Column(String, nullable=True)
 
-    purchases = relationship("Purchase", back_populates="customer")
+    purchases = relationship("Purchase", back_populates="customer", cascade="all, delete-orphan")
 
 
 class Purchase(db.Model):
@@ -151,7 +153,7 @@ class PurchaseItem(db.Model):
     sale_price = Column(Float(asdecimal=True), nullable=False)
 
     purchase = relationship("Purchase", back_populates="purchase_items")
-    product = relationship("Product", back_populates="purchase_items")
+    product = relationship("Product")
 
 
 class Employee(db.Model):
