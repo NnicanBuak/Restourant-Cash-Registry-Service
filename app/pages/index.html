@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Главная – Ca$hReg</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/styles.css') }}"
+		/>
+		<style>
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				margin: 0;
+			}
+
+			.main-container {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				width: 90%;
+				max-width: 450px;
+				padding: 2em;
+				background-color: rgba(255, 255, 255, 0.1);
+				box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+				border-radius: 10px;
+				box-sizing: border-box;
+			}
+
+			.login-section h2 {
+				font-size: 2em;
+				margin-bottom: 1em;
+			}
+
+			.login-section form {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				gap: 0.75em;
+			}
+
+			.login-section input,
+			.login-section button {
+				width: 100%;
+				padding: 1em;
+				font-size: 1.2em;
+				border-radius: 6px;
+				box-sizing: border-box;
+			}
+
+			.login-section input {
+				border: 2px solid #ccc;
+			}
+
+			.login-section button {
+				background-color: #fff;
+				color: #28a745;
+				border: none;
+				cursor: pointer;
+			}
+
+			.admin-register {
+				margin-top: 1.5em;
+				text-align: center;
+			}
+
+			.admin-register a {
+				color: #e6ffe6;
+				font-size: 1.1em;
+				text-decoration: underline;
+			}
+
+			footer {
+				font-size: 1em;
+				color: #e6ffe6;
+				width: 100%;
+				text-align: center;
+				margin-top: 1em;
+			}
+
+			@media (max-width: 500px) {
+				.main-container {
+					padding: 1.5em;
+				}
+				.login-section h2 {
+					font-size: 1.5em;
+				}
+				.login-section input,
+				.login-section button {
+					font-size: 1em;
+					padding: 0.8em;
+				}
+				.admin-register a {
+					font-size: 1em;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="main-container">
+			<div class="login-section">
+				<h2>Вход в Кассовый Аппарат</h2>
+				<form action="{{ url_for('login') }}" method="POST">
+					<input
+						type="text"
+						name="username"
+						placeholder="Имя пользователя"
+						required
+					/>
+					<input
+						type="password"
+						name="password"
+						placeholder="Пароль"
+						required
+					/>
+					<button type="submit">Войти</button>
+				</form>
+			</div>
+			<div class="admin-register">
+				<a href="{{ url_for('register') }}"
+					>Регистрация кассового аппарата (для Системного администратора)</a
+				>
+			</div>
+		</main>
+		<footer>
+			<p>&copy; 2024 Ca$hReg. Все права не защищены.</p>
+		</footer>
+	</body>
+</html>
