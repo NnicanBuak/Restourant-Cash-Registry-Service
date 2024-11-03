@@ -12,7 +12,5 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app import models, routes, perms
-
 with app.app_context():
     db.create_all()

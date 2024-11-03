@@ -89,8 +89,12 @@
 <body>
     <main class="register-container">
         <div class="register-section">
-            <h2>Регистрация Кассового Аппарата</h2>
             <form action="{{ url_for('register') }}" method="POST">
+            <h2>Регистрация </h2>
+            <select name="user_type">
+                <option value="employee">Сотрудника</option>
+                <option value="manager">Менеджера</option>
+            </select>
                 <input type="text" name="admin_username" placeholder="Имя администратора" required>
                 <input type="email" name="admin_email" placeholder="Электронная почта" required>
                 <input type="password" name="admin_password" placeholder="Пароль" required>

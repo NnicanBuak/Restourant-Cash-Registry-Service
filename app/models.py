@@ -19,8 +19,10 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    position = db.Column(db.String(80), nullable=True)
     passhash = db.Column(db.String(120), nullable=False)
     is_confirmed = db.Column(db.Boolean, default=False, nullable=False)
+    is_employee = db.Column(db.Boolean, default=False, nullable=False)
     is_manager = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -31,6 +33,9 @@ class User(db.Model):
         foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
         cascade="all, delete-orphan",
     )
+    purchases = relationship("Purchase", back_populates="user")
+    stop_list = relationship("StopList", back_populates="user")
+    stop_list_history = relationship("StopListHistory", back_populates="user")
 
 
 class Location(db.Model):
@@ -163,10 +168,6 @@ class Employee(db.Model):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     position = Column(String, nullable=False)
-
-    stop_list_history = relationship("StopListHistory", back_populates="employee")
-    stop_list = relationship("StopList", back_populates="employee")
-    purchases = relationship("Purchase", back_populates="employee")
 
 
 class Promotion(db.Model):
