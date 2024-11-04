@@ -1,109 +1,136 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация – Кассовый Аппарат</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        body {
-            background-color: #28a745;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Регистрация – Кассовый Аппарат</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/styles.css') }}"
+		/>
+		<style>
+			body {
+				background-color: #28a745;
+				color: #fff;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				margin: 0;
+			}
 
-        .register-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 90%;
-            max-width: 450px;
-            padding: 2em;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
+			.register-container {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				width: 90%;
+				max-width: 450px;
+				padding: 3em;
+				background-color: rgba(255, 255, 255, 0.1);
+				box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+				border-radius: 10px;
+				box-sizing: border-box;
+			}
 
-        .register-section h2 {
-            font-size: 2em;
-            margin-bottom: 1em;
-            text-align: center;
-        }
+			.register-section h2 {
+				font-size: 2em;
+                padding-bottom: 1.5em;
+				text-align: center;
+                text-wrap: nowrap;
+				display: flex;
+                gap: 0.5em;
+				align-items: center;
+				justify-content: space-between;
+				color: #fff;
+			}
 
-        .register-section form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75em;
-        }
+			.register-section h2 select {
+				font-size: 0.9em;
+				padding: 0.3em;
+				background-color: #fff;
+				color: #28a745;
+				border: none;
+				border-radius: 6px;
+				cursor: pointer;
+			}
 
-        .register-section input,
-        .register-section button {
-            width: 100%;
-            padding: 1em;
-            font-size: 1.2em;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
+			.register-section form {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+                align-items: center;
+				gap: 0.75em;
+			}
 
-        .register-section input {
-            border: 2px solid #ccc;
-        }
+			.register-section input,
+			.register-section button {
+				width: 90%;
+				padding: 1em;
+				font-size: 1.2em;
+				border-radius: 6px;
+				box-sizing: border-box;
+			}
 
-        .register-section button {
-            background-color: #fff;
-            color: #28a745;
-            border: none;
-            cursor: pointer;
-        }
+			.register-section input {
+				border: 2px solid #ccc;
+			}
 
-        footer {
-            font-size: 1em;
-            color: #e6ffe6;
-            width: 100%;
-            text-align: center;
-            margin-top: 1em;
-        }
+			.register-section button {
+                margin-top: 1em;
+				background-color: #fff;
+				color: #28a745;
+				border: none;
+				cursor: pointer;
+			}
 
-        @media (max-width: 500px) {
-            .register-container {
-                padding: 1.5em;
-            }
-            .register-section h2 {
-                font-size: 1.5em;
-            }
-            .register-section input,
-            .register-section button {
-                font-size: 1em;
-                padding: 0.8em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <main class="register-container">
-        <div class="register-section">
-            <form action="{{ url_for('register') }}" method="POST">
-            <h2>Регистрация </h2>
-            <select name="user_type">
-                <option value="employee">Сотрудника</option>
-                <option value="manager">Менеджера</option>
-            </select>
-                <input type="text" name="admin_username" placeholder="Имя администратора" required>
-                <input type="email" name="admin_email" placeholder="Электронная почта" required>
-                <input type="password" name="admin_password" placeholder="Пароль" required>
-                <button type="submit">Зарегистрироваться</button>
-            </form>
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Ca$hReg. Все права защищены.</p>
-    </footer>
-</body>
+			@media (max-width: 500px) {
+				.register-container {
+					padding: 1.5em;
+				}
+				.register-section h2 {
+					font-size: 1.5em;
+				}
+				.register-section input,
+				.register-section button {
+					font-size: 1em;
+					padding: 0.8em;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="register-container">
+			<div class="register-section">
+				<form action="{{ url_for('register') }}" method="POST">
+					<h2>
+						<span>Регистрация</span>
+						<select name="user_type" id="user_type">
+							<option value="employee">Сотрудника</option>
+							<option value="manager">Менеджера</option>
+						</select>
+					</h2>
+					<input
+						type="text"
+						name="username"
+						id="username"
+						placeholder="Имя"
+						required
+					/>
+					<input
+						type="password"
+						name="password"
+						placeholder="Пароль"
+						required
+					/>
+					<button type="submit">Зарегистрироваться</button>
+				</form>
+			</div>
+		</main>
+		<footer>
+			<p>&copy; 2024 Ca$hReg. Все права защищены.</p>
+		</footer>
+		<script>
+		</script>
+	</body>
 </html>
