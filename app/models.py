@@ -33,9 +33,9 @@ class User(db.Model):
         back_populates="users",
         foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
     )
-    purchases = relationship("Purchase", back_populates="employee")
-    stop_list = relationship("StopList", back_populates="employee")
-    stop_list_history = relationship("StopListHistory", back_populates="employee")
+    purchases = relationship("Purchase", back_populates="user")
+    stop_list = relationship("StopList", back_populates="user")
+    stop_list_history = relationship("StopListHistory", back_populates="user")
 
 
 class Location(db.Model):
@@ -85,13 +85,13 @@ class StopList(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
     location_id = Column(Integer, ForeignKey("location.id"), nullable=False)
-    employee_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     remaining_quantity = Column(Integer, nullable=True)
     date_added = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product", back_populates="stop_list")
     location = relationship("Location", back_populates="stop_list")
-    employee = relationship("User", back_populates="stop_list")
+    user = relationship("User", back_populates="stop_list")
 
 
 class StopListHistory(db.Model):
@@ -100,14 +100,14 @@ class StopListHistory(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
     location_id = Column(Integer, ForeignKey("location.id"), nullable=False)
-    employee_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     action = Column(Enum("added", "removed"), nullable=False)
     remaining_quantity = Column(Integer, nullable=False)
     datetime = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product")
     location = relationship("Location")
-    employee = relationship("User")
+    user = relationship("User")
 
 
 class Customer(db.Model):
@@ -133,7 +133,7 @@ class Purchase(db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customer.id"), nullable=True)
-    employee_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     location_id = Column(String, ForeignKey("location.id"), nullable=False)
     total_before_tax = Column(Float(asdecimal=True), nullable=False)
     tax_amount = Column(Float(asdecimal=True), nullable=False)
@@ -150,7 +150,7 @@ class Purchase(db.Model):
 
     customer = relationship("Customer", cascade="save-update")
     purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
-    employee = relationship("User", cascade="none")
+    user = relationship("User", cascade="none")
     promotion = relationship("Promotion", cascade="none")
 
 
