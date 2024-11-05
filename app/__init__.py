@@ -28,6 +28,8 @@ class DatabaseView(BaseView):
         for model in models_list:
             model_name = model.__tablename__
             entries = db.session.query(model).all()
+            if not entries:
+                return self.render("admin/database_view.html", data=[], message="Нет данных для отображения")
             data[model_name] = entries
         return self.render("admin/database_view.html", data=data)
 

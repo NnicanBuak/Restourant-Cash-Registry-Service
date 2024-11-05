@@ -76,7 +76,7 @@ class Product(db.Model):
     price = Column(Float(asdecimal=True), nullable=False)
 
     stop_list = relationship("StopList", cascade="all, delete-orphan")
-    purchase_items = relationship("PurchaseItem")
+    purchases = relationship("PurchaseItem")
 
 
 class StopList(db.Model):
@@ -129,7 +129,7 @@ class Customer(db.Model):
 
 
 class Purchase(db.Model):
-    __tablename__: str = "purchase"
+    __tablename__ = "purchase"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customer.id"), nullable=True)
@@ -164,7 +164,7 @@ class PurchaseItem(db.Model):
     sale_price = Column(Float(asdecimal=True), nullable=False)
 
     purchase = relationship("Purchase", back_populates="purchase_items")
-    product = relationship("Product")
+    product = relationship("Product", back_populates="purchases", overlaps="purchases")
 
 
 class Promotion(db.Model):
