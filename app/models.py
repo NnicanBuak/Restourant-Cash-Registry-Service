@@ -11,7 +11,9 @@ from sqlalchemy import (
     DateTime,
 )
 from sqlalchemy.orm import relationship
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class User(db.Model):
@@ -178,7 +180,7 @@ class Promotion(db.Model):
     end_date = Column(DateTime, nullable=False)
 
 
-models = [
+models_list = [
     User,
     Location,
     UserLocation,
