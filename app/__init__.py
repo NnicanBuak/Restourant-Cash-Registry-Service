@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from .config import Config
-from flask_admin import Admin, BaseView, expose
-from .models import db, models_list
+from flask_admin import Admin
+from .models import db
+from .views import *
 
 
 app = Flask(
@@ -14,28 +15,12 @@ app = Flask(
 app.config.from_object(Config)
 
 
-
 db.init_app(app)
 jwt = JWTManager(app)
 admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
 
 
-class DatabaseView(BaseView):
-    @expose("/")
-    def index(self):
-        data = {}
-        for model in models_list:
-            model_name = model.__tablename__
-            entries = db.session.query(model).all()
-            if not entries:
-                return self.render("admin/database_view.html", data=[], message="Нет данных для отображения")
-            data[model_name] = entries
-        return self.render("admin/database_view.html", data=data)
-
-
-admin.add_view(
-    DatabaseView(name="Database Overview", endpoint="database_overview")
-)
+admin.add_view(DatabaseView(name="Database View", endpoint="database_view"))
 
 from . import models, pages_routes, api_routes, perms
 from .api_routes import api_blueprint
