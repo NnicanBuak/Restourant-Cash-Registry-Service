@@ -21,7 +21,7 @@ jwt = JWTManager(app)
 admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
 
 
-class CombinedDatabaseView(BaseView):
+class DatabaseView(BaseView):
     @expose("/")
     def index(self):
         data = {}
@@ -33,7 +33,7 @@ class CombinedDatabaseView(BaseView):
 
 
 admin.add_view(
-    CombinedDatabaseView(name="Database Overview", endpoint="database_overview")
+    DatabaseView(name="Database Overview", endpoint="database_overview")
 )
 
 from . import models, pages_routes, api_routes, perms
