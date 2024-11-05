@@ -5,9 +5,10 @@ from flask_jwt_extended import create_access_token, jwt_required
 from .models import User
 from .perms import admin_required
 
-api_blueprint = Blueprint('api', __name__)
+api_blueprint = Blueprint("api", __name__)
 
-@app.route("/api/register", methods=["GET", "POST"])
+
+@app.route("/api/register", methods=["POST"])
 def register():
     data = request.get_json()
     new_user = User(
@@ -18,7 +19,7 @@ def register():
     return jsonify({"msg": "User created successfully"}), 201
 
 
-@app.route("/api/login", methods=["GET","POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     user = User.query.filter_by(name=data["name"]).first()
