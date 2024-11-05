@@ -22,7 +22,6 @@ admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
 
 admin.add_view(DatabaseView(name="Database View", endpoint="database_view"))
 
-from . import models, pages_routes, api_routes, perms
 from .api_routes import api_blueprint
 from .pages_routes import pages_blueprint
 
