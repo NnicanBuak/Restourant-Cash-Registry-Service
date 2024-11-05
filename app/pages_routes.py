@@ -6,23 +6,23 @@ pages = Blueprint("pages", __name__)
 
 
 @pages.route("/")
-def index_page():
+def index():
     return render_template("index.html")
 
 
 @pages.route("/register")
-def register_page():
+def register():
     return render_template("register.html")
 
 
 @pages.route("/app")
 @jwt_required()
-def app_page():
+def app():
     return render_template("app.html")
 
 
 @pages.route("/admin/unconfirmed_users", methods=["GET"])
 @jwt_required()
 @admin_required()
-def unconfirmed_users_page():
+def unconfirmed_users():
     return "0"

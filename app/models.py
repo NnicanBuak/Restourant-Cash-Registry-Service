@@ -64,7 +64,8 @@ class UserLocation(db.Model):
     __tablename__ = "user_location"
 
     user_id = db.Column(db.Integer, ForeignKey("user.id"), primary_key=True)
-    location_id = db.Column(db.Integer, ForeignKey("location.id"), primary_key=True)
+    location_id = db.Column(db.Integer, ForeignKey(
+        "location.id"), primary_key=True)
 
 
 class Product(db.Model):
@@ -129,6 +130,10 @@ class Customer(db.Model):
 
 
 class Purchase(db.Model):
+    status_enum = ["accepted", "cancelled", "preparing",
+                   "prepared", "closed", "refunded"]
+    type_enum = ["dine-in", "delivery"]
+    
     __tablename__ = "purchase"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -143,13 +148,14 @@ class Purchase(db.Model):
     delivery_address = Column(String, nullable=True)
     promotion_id = Column(Integer, ForeignKey("promotion.id"), nullable=True)
     status = Column(
-        Enum("accepted", "cancelled", "preparing", "prepared", "closed", "refunded"),
+        Enum(*status_enum),
         nullable=False,
     )
-    type = Column(Enum("dine-in", "delivery"), nullable=False)
+    type = Column(Enum(*type_enum), nullable=False)
 
     customer = relationship("Customer", cascade="save-update")
-    purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
+    purchase_items = relationship(
+        "PurchaseItem", cascade="save-update, delete-orphan")
     user = relationship("User", cascade="none")
     promotion = relationship("Promotion", cascade="none")
 
@@ -164,7 +170,8 @@ class PurchaseItem(db.Model):
     sale_price = Column(Float(asdecimal=True), nullable=False)
 
     purchase = relationship("Purchase", back_populates="purchase_items")
-    product = relationship("Product", back_populates="purchases", overlaps="purchases")
+    product = relationship(
+        "Product", back_populates="purchases", overlaps="purchases")
 
 
 class Promotion(db.Model):
