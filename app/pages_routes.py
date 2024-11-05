@@ -18,7 +18,7 @@ def register_page():
 @pages_blueprint.route("/app")
 @jwt_required()
 def app_page():
-    return "0"
+    return render_template("app.html")
 
 
 @pages_blueprint.route("/admin/unconfirmed_users", methods=["GET"])
