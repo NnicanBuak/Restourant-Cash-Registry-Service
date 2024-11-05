@@ -15,6 +15,8 @@ app = Flask(
     static_url_path="",
 )
 app.config.from_object(Config)
+app.register_blueprint(pages)
+app.register_blueprint(api)
 
 
 db.init_app(app)
@@ -24,9 +26,6 @@ admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
 
 admin.add_view(DatabaseView(name="Database View", endpoint="database_view"))
 
-
-app.register_blueprint(api)
-app.register_blueprint(pages)
 
 with app.app_context():
     db.create_all()
