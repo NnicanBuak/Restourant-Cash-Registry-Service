@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from .models import User, Purchase, PurchaseItem
 from .perms import admin_required
-from .make_responce import make_responce, make_error
+from .make_response import make_response, make_error
 from datetime import datetime
 
 
