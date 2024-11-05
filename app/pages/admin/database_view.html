@@ -1,0 +1,23 @@
+{% extends 'admin/master.html' %} {% block body %}
+<h2>Database Overview</h2>
+{% for model_name, entries in data.items() %}
+<h3>{{ model_name }}</h3>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			{% for column in entries[0].__table__.columns if entries %}
+			<th>{{ column.name }}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for entry in entries %}
+		<tr>
+			{% for column in entry.__table__.columns %}
+			<td>{{ getattr(entry, column.name) }}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endfor %} {% endblock %}

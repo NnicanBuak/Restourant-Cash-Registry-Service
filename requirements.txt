@@ -1,6 +1,6 @@
 python-dotenv
 Flask
-Flask-SQLAlchemy
+Flask-sqlalchemy
 flask-jwt-extended
 flask-admin
 werkzeug
