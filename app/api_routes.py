@@ -1,11 +1,13 @@
 from . import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import request, jsonify
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from .models import User
 from .perms import admin_required
 
-@app.route("/register", methods=["POST"])
+api_blueprint = Blueprint('api', __name__)
+
+@app.route("/api/register", methods=["GET", "POST"])
 def register():
     data = request.get_json()
     new_user = User(
@@ -16,7 +18,7 @@ def register():
     return jsonify({"msg": "User created successfully"}), 201
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/api/login", methods=["GET","POST"])
 def login():
     data = request.get_json()
     user = User.query.filter_by(name=data["name"]).first()
@@ -28,7 +30,7 @@ def login():
     return jsonify({"msg": "Bad username or password"}), 401
 
 
-@app.route("/admin/confirm_user/<int:user_id>", methods=["POST"])
+@app.route("/api/admin/confirm_user/<int:user_id>", methods=["GET", "POST"])
 @jwt_required()
 @admin_required()
 def confirm_user(user_id):

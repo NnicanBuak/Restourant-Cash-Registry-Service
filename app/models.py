@@ -125,7 +125,7 @@ class Purchase(db.Model):
     __tablename__: str = "purchase"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey("customer.id"), nullable=False)
+    customer_id = Column(Integer, ForeignKey("customer.id"), nullable=True)
     employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
     location_id = Column(String, ForeignKey("location.id"), nullable=False)
     total_before_tax = Column(Float(asdecimal=True), nullable=False)

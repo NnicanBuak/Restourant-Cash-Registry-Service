@@ -1,19 +1,22 @@
 from . import app, db
-from flask import render_template
+from flask import Blueprint, render_template
 from flask_jwt_extended import jwt_required
 from .perms import admin_required
 
+pages_blueprint = Blueprint("pages", __name__)
 
-@app.route("/", methods=["GET"])
+
+@app.route("/")
 def index_page():
     return render_template("index.html")
 
 
-@app.route("/register", methods=["GET"])
+@app.route("/register")
 def register_page():
     return render_template("register.html")
 
-@app.route("/app", methods=["GET"])
+
+@app.route("/app")
 @jwt_required()
 def app_page():
     return "0"
