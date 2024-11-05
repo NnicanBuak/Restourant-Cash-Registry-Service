@@ -1,17 +1,15 @@
-from . import db
-from . import db
+from .models import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from .models import User, Purchase, PurchaseItem
-from .models import User, Purchase, PurchaseItem
 from .perms import admin_required
-from app.make_responce import make_responce
+from .make_response import make_response
 
-api_blueprint = Blueprint('api', __name__)
+api = Blueprint('api', __name__)
 
 
-@api_blueprint.route("/api/register", methods=["POST"])
+@api.route("/api/register", methods=["POST"])
 def register():
     data = request.get_json()
     new_user = User(
@@ -22,7 +20,7 @@ def register():
     return jsonify({"msg": "User created successfully"}), 201
 
 
-@api_blueprint.route("/api/login", methods=["POST"])
+@api.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     user = User.query.filter_by(name=data["name"]).first()
@@ -34,7 +32,7 @@ def login():
     return jsonify({"msg": "Bad username or password"}), 401
 
 
-@api_blueprint.route("/api/admin/confirm_user/<int:user_id>", methods=["GET", "POST"])
+@api.route("/api/admin/confirm_user/<int:user_id>", methods=["GET", "POST"])
 @jwt_required()
 @admin_required()
 def confirm_user(user_id):
@@ -49,16 +47,16 @@ def confirm_user(user_id):
     return jsonify({"msg": f"Пользователь {user.name} был подтверждён.\n "}), 200
 
 
-@api_blueprint.route("/api/add_purchase", methods=["POST", "GET"])
+@api.route("/api/add_purchase", methods=["POST", "GET"])
 def add_purchase():
     data = request.args.to_dict(flat=True)
     new_purchase = Purchase(**data)
     db.session.add(new_purchase)
     db.session.commit()
-    return make_responce({'id': new_purchase.id})
+    return make_response({'id': new_purchase.id})
 
 
-@api_blueprint.route("/api/purchases/<int:purchase_id>", methods=["GET"])
+@api.route("/api/purchases/<int:purchase_id>", methods=["GET"])
 def get_purchase(purchase_id):
     purchase = Purchase.query.get(purchase_id)
     if not purchase:
@@ -80,7 +78,7 @@ def get_purchase(purchase_id):
     })
 
 
-@api_blueprint.route("/api/purchases/<int:purchase_id>", methods=["PUT"])
+@api.route("/api/purchases/<int:purchase_id>", methods=["PUT"])
 def update_purchase(purchase_id):
     data = request.json
     purchase = Purchase.query.get(purchase_id)
@@ -92,7 +90,7 @@ def update_purchase(purchase_id):
     return jsonify({"message": "Purchase updated"})
 
 
-@api_blueprint.route("/api/purchases/<int:purchase_id>", methods=["DELETE"])
+@api.route("/api/purchases/<int:purchase_id>", methods=["DELETE"])
 def delete_purchase(purchase_id):
     purchase = Purchase.query.get(purchase_id)
     if not purchase:
@@ -102,7 +100,7 @@ def delete_purchase(purchase_id):
     return jsonify({"message": "Purchase deleted"})
 
 
-@api_blueprint.route("/api/purchase_items", methods=["POST"])
+@api.route("/api/purchase_items", methods=["POST"])
 def create_purchase_item():
     data = request.json
     new_purchase_item = PurchaseItem(**data)
@@ -111,7 +109,7 @@ def create_purchase_item():
     return jsonify({"id": new_purchase_item.id}), 201
 
 
-@api_blueprint.route("/api/purchase_items/<int:purchase_item_id>", methods=["GET"])
+@api.route("/api/purchase_items/<int:purchase_item_id>", methods=["GET"])
 def get_purchase_item(purchase_item_id):
     purchase_item = PurchaseItem.query.get(purchase_item_id)
     if not purchase_item:
@@ -125,7 +123,7 @@ def get_purchase_item(purchase_item_id):
     })
 
 
-@api_blueprint.route("/api/purchase_items/<int:purchase_item_id>", methods=["PUT"])
+@api.route("/api/purchase_items/<int:purchase_item_id>", methods=["PUT"])
 def update_purchase_item(purchase_item_id):
     data = request.json
     purchase_item = PurchaseItem.query.get(purchase_item_id)
@@ -137,7 +135,7 @@ def update_purchase_item(purchase_item_id):
     return jsonify({"message": "Purchase item updated"})
 
 
-@api_blueprint.route("/api/purchase_items/<int:purchase_item_id>", methods=["DELETE"])
+@api.route("/api/purchase_items/<int:purchase_item_id>", methods=["DELETE"])
 def delete_purchase_item(purchase_item_id):
     purchase_item = PurchaseItem.query.get(purchase_item_id)
     if not purchase_item:

@@ -2,6 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from .config import Config
 from flask_admin import Admin
+from .api_routes import api
+from .pages_routes import pages
 from .models import db
 from .views import *
 
@@ -22,12 +24,9 @@ admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
 
 admin.add_view(DatabaseView(name="Database View", endpoint="database_view"))
 
-from . import models, pages_routes, api_routes, perms
-from .api_routes import api_blueprint
-from .pages_routes import pages_blueprint
 
-app.register_blueprint(api_blueprint)
-app.register_blueprint(pages_blueprint)
+app.register_blueprint(api)
+app.register_blueprint(pages)
 
 with app.app_context():
     db.create_all()

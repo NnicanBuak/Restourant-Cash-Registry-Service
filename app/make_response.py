@@ -1,6 +1,6 @@
 from app import app
 import json
-def make_responce(text):
+def make_response(text):
     if isinstance(text, (str, int, float)):
         text = {"responce": text}
 

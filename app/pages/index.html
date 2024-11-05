@@ -96,7 +96,7 @@
 		<main class="main-container">
 			<div class="login-section">
 				<h2>Вход в Кассовый Аппарат</h2>
-				<form action="{{ url_for('login') }}" method="GET">
+				<form action="{{ url_for('api.login') }}" method="GET">
 					<input
 						type="text"
 						name="username"
@@ -113,7 +113,7 @@
 				</form>
 			</div>
 			<div class="admin-register">
-				<a href="{{ url_for('register_page') }}"
+				<a href="{{ url_for('register') }}"
 					>Регистрация кассового аппарата (для Системного администратора)</a
 				>
 			</div>
