@@ -5,7 +5,6 @@ from .config import Config
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
-
 app = Flask(
     "Restourant Cash Register Service",
     template_folder="app/pages",
@@ -18,7 +17,6 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app import models, pages_routes, api_routes, perms
 from app.api_routes import api_blueprint
 from app.pages_routes import pages_blueprint
 
