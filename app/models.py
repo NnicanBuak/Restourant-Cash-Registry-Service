@@ -51,8 +51,12 @@ class Location(db.Model):
         back_populates="locations",
         foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
     )
-    stop_list = relationship("StopList", back_populates="location", cascade="all, delete-orphan")
-    stop_list_history = relationship("StopListHistory", back_populates="location", cascade="all, delete-orphan")
+    stop_list = relationship(
+        "StopList", back_populates="location", cascade="all, delete-orphan"
+    )
+    stop_list_history = relationship(
+        "StopListHistory", back_populates="location", cascade="all, delete-orphan"
+    )
 
 
 class UserLocation(db.Model):
@@ -80,13 +84,13 @@ class StopList(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
     location_id = Column(Integer, ForeignKey("location.id"), nullable=False)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
+    employee_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     remaining_quantity = Column(Integer, nullable=True)
     date_added = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product", back_populates="stop_list")
     location = relationship("Location", back_populates="stop_lists")
-    employee = relationship("Employee", back_populates="stop_list")
+    employee = relationship("User", back_populates="stop_list")
 
 
 class StopListHistory(db.Model):
@@ -95,14 +99,14 @@ class StopListHistory(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
     location_id = Column(Integer, ForeignKey("location.id"), nullable=False)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
+    employee = Column(Integer, ForeignKey("user.id"), nullable=False)
     action = Column(Enum("added", "removed"), nullable=False)
     remaining_quantity = Column(Integer, nullable=False)
     datetime = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product")
     location = relationship("Location")
-    employee = relationship("Employee")
+    employee = relationship("User")
 
 
 class Customer(db.Model):
@@ -118,7 +122,9 @@ class Customer(db.Model):
     discount = Column(Float(asdecimal=True), default=0)
     note = Column(String, nullable=True)
 
-    purchases = relationship("Purchase", back_populates="customer", cascade="all, delete-orphan")
+    purchases = relationship(
+        "Purchase", back_populates="customer", cascade="all, delete-orphan"
+    )
 
 
 class Purchase(db.Model):
@@ -126,7 +132,7 @@ class Purchase(db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customer.id"), nullable=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
+    employee = Column(Integer, ForeignKey("user.id"), nullable=False)
     location_id = Column(String, ForeignKey("location.id"), nullable=False)
     total_before_tax = Column(Float(asdecimal=True), nullable=False)
     tax_amount = Column(Float(asdecimal=True), nullable=False)
@@ -143,7 +149,7 @@ class Purchase(db.Model):
 
     customer = relationship("Customer", cascade="save-update")
     purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
-    employee = relationship("Employee", cascade="none")
+    employee = relationship("user", cascade="none")
     promotion = relationship("Promotion", cascade="none")
 
 
@@ -160,15 +166,6 @@ class PurchaseItem(db.Model):
     product = relationship("Product")
 
 
-class Employee(db.Model):
-    __tablename__: str = "employee"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
-    position = Column(String, nullable=False)
-
-
 class Promotion(db.Model):
     __tablename__: str = "promotion"
 
@@ -179,3 +176,17 @@ class Promotion(db.Model):
     discount_value = Column(Integer, nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
+
+
+models = [
+    User,
+    Location,
+    UserLocation,
+    Product,
+    StopList,
+    StopListHistory,
+    Customer,
+    Purchase,
+    PurchaseItem,
+    Promotion,
+]

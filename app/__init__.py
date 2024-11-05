@@ -1,9 +1,8 @@
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from .config import Config
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 
 
 app = Flask(
@@ -17,6 +16,7 @@ app.config.from_object(Config)
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+admin = Admin(app, name='MyApp Admin', template_mode='bootstrap3')
 
 from app import models, pages_routes, api_routes, perms
 from app.api_routes import api_blueprint

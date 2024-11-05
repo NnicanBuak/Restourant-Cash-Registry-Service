@@ -30,7 +30,7 @@ def login():
     return jsonify({"msg": "Bad username or password"}), 401
 
 
-@app.route("/api/admin/confirm_user/<int:user_id>", methods=["GET", "POST"])
+@app.route("/api/confirm_user/<int:user_id>", methods=["GET", "POST"])
 @jwt_required()
 @admin_required()
 def confirm_user(user_id):

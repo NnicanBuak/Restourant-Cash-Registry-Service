@@ -21,7 +21,6 @@ def register_page():
 def app_page():
     return "0"
 
-
 @app.route("/admin/unconfirmed_users", methods=["GET"])
 @jwt_required()
 @admin_required()
