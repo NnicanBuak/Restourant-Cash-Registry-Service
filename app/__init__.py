@@ -37,7 +37,6 @@ admin.add_view(
     DatabaseView(name="Database Overview", endpoint="database_overview")
 )
 
-from . import models, pages_routes, api_routes, perms
 from .api_routes import api_blueprint
 from .pages_routes import pages_blueprint
 

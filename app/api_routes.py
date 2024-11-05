@@ -1,12 +1,13 @@
 from . import db
-from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from .models import User, Purchase, PurchaseItem
 from .models import User, Purchase, PurchaseItem
 from .perms import admin_required
-from app.make_responce import make_responce
+from .make_responce import make_responce, make_error
+from datetime import datetime
+
 
 api_blueprint = Blueprint('api', __name__)
 
@@ -52,6 +53,23 @@ def confirm_user(user_id):
 @api_blueprint.route("/api/add_purchase", methods=["POST", "GET"])
 def add_purchase():
     data = request.args.to_dict(flat=True)
+    
+    try:
+        data['id'] = int(data['id'])
+        data['customer_id'] = int(data['customer_id'])
+        data['employee_id'] = int(data['employee_id'])
+        data['location_id'] = int(data['location_id'])
+        data['total_before_tax'] = float(data['total_before_tax'])
+        data['tax_amount'] = float(data['tax_amount'])
+        data['total'] = float(data['total'])
+        data['datetime'] = datetime.strptime(data['datetime'], '%d.%m.%Y')
+        data['table_number'] = int(data['table_number'])
+        data['promotion_id'] = int(data['promotion_id'])
+        
+    except Exception as ex:
+        raise make_error(ex, 400)
+    print(data)
+    
     new_purchase = Purchase(**data)
     db.session.add(new_purchase)
     db.session.commit()
