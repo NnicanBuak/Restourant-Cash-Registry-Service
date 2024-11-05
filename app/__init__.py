@@ -16,6 +16,7 @@ app = Flask(
 app.config.from_object(Config)
 
 
+
 db.init_app(app)
 jwt = JWTManager(app)
 admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3")
