@@ -32,7 +32,6 @@ class User(db.Model):
         secondary="user_location",
         back_populates="users",
         foreign_keys="[UserLocation.user_id, UserLocation.location_id]",
-        cascade="all, delete-orphan",
     )
     purchases = relationship("Purchase", back_populates="user")
     stop_list = relationship("StopList", back_populates="user")
@@ -151,7 +150,7 @@ class Purchase(db.Model):
 
     customer = relationship("Customer", cascade="save-update")
     purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
-    employee = relationship("user", cascade="none")
+    employee = relationship("User", cascade="none")
     promotion = relationship("Promotion", cascade="none")
 
 
