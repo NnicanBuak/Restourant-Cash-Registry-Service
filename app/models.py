@@ -26,6 +26,7 @@ class User(db.Model):
     is_employee = db.Column(db.Boolean, default=False, nullable=False)
     is_manager = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     locations = relationship(
         "Location",
@@ -45,6 +46,7 @@ class Location(db.Model):
     name = Column(String, nullable=False)
     tax_id = Column(String, nullable=False)
     address = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     users = relationship(
         "User",
@@ -65,6 +67,7 @@ class UserLocation(db.Model):
 
     user_id = db.Column(db.Integer, ForeignKey("user.id"), primary_key=True)
     location_id = db.Column(db.Integer, ForeignKey("location.id"), primary_key=True)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
 
 class Product(db.Model):
@@ -74,6 +77,7 @@ class Product(db.Model):
     name = Column(String, nullable=False)
     category = Column(String, nullable=False)
     price = Column(Float(asdecimal=True), nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     stop_list = relationship("StopList", cascade="all, delete-orphan")
     purchases = relationship("PurchaseItem")
@@ -87,7 +91,7 @@ class StopList(db.Model):
     location_id = Column(Integer, ForeignKey("location.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     remaining_quantity = Column(Integer, nullable=True)
-    date_added = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product", back_populates="stop_list")
     location = relationship("Location", back_populates="stop_list")
@@ -103,7 +107,7 @@ class StopListHistory(db.Model):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     action = Column(Enum("added", "removed"), nullable=False)
     remaining_quantity = Column(Integer, nullable=False)
-    datetime = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     product = relationship("Product")
     location = relationship("Location")
@@ -122,6 +126,7 @@ class Customer(db.Model):
     block_status = Column(Boolean, default=False, nullable=False)
     discount = Column(Float(asdecimal=True), default=0)
     note = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     purchases = relationship(
         "Purchase", back_populates="customer", cascade="all, delete-orphan"
@@ -153,6 +158,7 @@ class Purchase(db.Model):
     total_before_tax = Column(Float(asdecimal=True), nullable=False)
     tax_amount = Column(Float(asdecimal=True), nullable=False)
     total = Column(Float(asdecimal=True), nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     customer = relationship("Customer", cascade="save-update")
     purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
@@ -168,6 +174,7 @@ class PurchaseItem(db.Model):
     product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
     quantity = Column(Integer, nullable=False)
     sale_price = Column(Float(asdecimal=True), nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     purchase = relationship("Purchase", back_populates="purchase_items")
     product = relationship("Product", back_populates="purchases", overlaps="purchases")
@@ -183,3 +190,4 @@ class Promotion(db.Model):
     discount_value = Column(Integer, nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
