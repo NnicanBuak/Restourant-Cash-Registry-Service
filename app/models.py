@@ -4,17 +4,20 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class Base:
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+
+class User(Base, db.Model):
     __tablename__ = "user"
 
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     passhash = db.Column(db.String(120), nullable=False)
     is_confirmed = db.Column(db.Boolean, default=False, nullable=False)
     is_employee = db.Column(db.Boolean, default=False, nullable=False)
     is_manager = db.Column(db.Boolean, default=False, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     locations = db.relationship(
         "Location",
@@ -27,14 +30,12 @@ class User(db.Model):
     stop_list_history = db.relationship("StopListHistory", back_populates="user")
 
 
-class Location(db.Model):
+class Location(Base, db.Model):
     __tablename__ = "location"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     tax_id = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     users = db.relationship(
         "User",
@@ -50,66 +51,56 @@ class Location(db.Model):
     )
 
 
-class UserLocation(db.Model):
+class UserLocation(Base, db.Model):
     __tablename__ = "user_location"
 
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    location_id = db.Column(
-        db.Integer, db.ForeignKey("location.id"), primary_key=True
-    )
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    location_id = db.Column(db.Integer, db.ForeignKey("location.id"))
 
 
-class Product(db.Model):
+class Product(Base, db.Model):
     __tablename__ = "product"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     category = db.Column(db.String, nullable=False)
     price = db.Column(db.Float(asdecimal=True), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     stop_list = db.relationship("StopList", cascade="all, delete-orphan")
     purchases = db.relationship("PurchaseItem")
 
 
-class StopList(db.Model):
+class StopList(Base, db.Model):
     __tablename__ = "stop_list"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("location.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     remaining_quantity = db.Column(db.Integer, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     product = db.relationship("Product", back_populates="stop_list")
     location = db.relationship("Location", back_populates="stop_list")
     user = db.relationship("User", back_populates="stop_list")
 
 
-class StopListHistory(db.Model):
+class StopListHistory(Base, db.Model):
     action_enum = ["added", "removed"]
 
     __tablename__ = "stop_list_history"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("location.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     action = db.Column(db.Enum(*action_enum), nullable=False)
     remaining_quantity = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     product = db.relationship("Product")
     location = db.relationship("Location")
     user = db.relationship("User")
 
 
-class Customer(db.Model):
+class Customer(Base, db.Model):
     __tablename__ = "customer"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
     phone_number = db.Column(db.String, nullable=False)
@@ -118,14 +109,13 @@ class Customer(db.Model):
     block_status = db.Column(db.Boolean, default=False, nullable=False)
     discount = db.Column(db.Float(asdecimal=True), default=0)
     note = db.Column(db.String, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     purchases = db.relationship(
         "Purchase", back_populates="customer", cascade="all, delete-orphan"
     )
 
 
-class Purchase(db.Model):
+class Purchase(Base, db.Model):
     status_enum = [
         "accepted",
         "cancelled",
@@ -138,7 +128,6 @@ class Purchase(db.Model):
 
     __tablename__ = "purchase"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     location_id = db.Column(db.String, db.ForeignKey("location.id"), nullable=False)
@@ -150,7 +139,6 @@ class Purchase(db.Model):
     total_before_tax = db.Column(db.Float(asdecimal=True), nullable=False)
     tax_amount = db.Column(db.Float(asdecimal=True), nullable=False)
     total = db.Column(db.Float(asdecimal=True), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     customer = db.relationship("Customer", cascade="save-update")
     purchase_items = db.relationship(
@@ -160,15 +148,13 @@ class Purchase(db.Model):
     promotion = db.relationship("Promotion", cascade="none")
 
 
-class PurchaseItem(db.Model):
+class PurchaseItem(Base, db.Model):
     __tablename__: str = "purchase_item"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     purchase_id = db.Column(db.Integer, db.ForeignKey("purchase.id"), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     sale_price = db.Column(db.Float(asdecimal=True), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     purchase = db.relationship("Purchase", back_populates="purchase_items")
     product = db.relationship(
@@ -176,14 +162,12 @@ class PurchaseItem(db.Model):
     )
 
 
-class Promotion(db.Model):
+class Promotion(Base, db.Model):
     __tablename__: str = "promotion"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
     discount_percentage = db.Column(db.Float(asdecimal=True), nullable=True)
     discount_value = db.Column(db.Integer, nullable=True)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))

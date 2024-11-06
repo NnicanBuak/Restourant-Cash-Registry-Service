@@ -6,7 +6,6 @@ from .config import Config
 from .api_routes import api
 from .pages_routes import pages
 from .models import db
-from .views import *
 
 
 app = Flask(
@@ -21,7 +20,7 @@ app.register_blueprint(api)
 
 db.init_app(app)
 jwt = JWTManager(app)
-admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap3", index_view=DashboardView(name="Dashboard"))
+admin = Admin(app, name="Ca$hReg Admin", template_mode="bootstrap4")
 
 with app.app_context():
     db.create_all()
