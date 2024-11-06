@@ -64,8 +64,7 @@ class UserLocation(db.Model):
     __tablename__ = "user_location"
 
     user_id = db.Column(db.Integer, ForeignKey("user.id"), primary_key=True)
-    location_id = db.Column(db.Integer, ForeignKey(
-        "location.id"), primary_key=True)
+    location_id = db.Column(db.Integer, ForeignKey("location.id"), primary_key=True)
 
 
 class Product(db.Model):
@@ -130,32 +129,33 @@ class Customer(db.Model):
 
 
 class Purchase(db.Model):
-    status_enum = ["accepted", "cancelled", "preparing",
-                   "prepared", "closed", "refunded"]
+    status_enum = [
+        "accepted",
+        "cancelled",
+        "preparing",
+        "prepared",
+        "closed",
+        "refunded",
+    ]
     type_enum = ["dine-in", "delivery"]
-    
+
     __tablename__ = "purchase"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_id = Column(Integer, ForeignKey("customer.id"), nullable=True)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     location_id = Column(String, ForeignKey("location.id"), nullable=False)
+    promotion_id = Column(Integer, ForeignKey("promotion.id"), nullable=True)
+    table_number = Column(Integer, nullable=True)
+    type = Column(Enum(*type_enum), nullable=False)
+    status = Column(Enum(*status_enum), nullable=False)
+    delivery_address = Column(String, nullable=True)
     total_before_tax = Column(Float(asdecimal=True), nullable=False)
     tax_amount = Column(Float(asdecimal=True), nullable=False)
     total = Column(Float(asdecimal=True), nullable=False)
-    datetime = Column(DateTime, default=datetime.now(timezone.utc))
-    table_number = Column(Integer, nullable=True)
-    delivery_address = Column(String, nullable=True)
-    promotion_id = Column(Integer, ForeignKey("promotion.id"), nullable=True)
-    status = Column(
-        Enum(*status_enum),
-        nullable=False,
-    )
-    type = Column(Enum(*type_enum), nullable=False)
 
     customer = relationship("Customer", cascade="save-update")
-    purchase_items = relationship(
-        "PurchaseItem", cascade="save-update, delete-orphan")
+    purchase_items = relationship("PurchaseItem", cascade="save-update, delete-orphan")
     user = relationship("User", cascade="none")
     promotion = relationship("Promotion", cascade="none")
 
@@ -170,8 +170,7 @@ class PurchaseItem(db.Model):
     sale_price = Column(Float(asdecimal=True), nullable=False)
 
     purchase = relationship("Purchase", back_populates="purchase_items")
-    product = relationship(
-        "Product", back_populates="purchases", overlaps="purchases")
+    product = relationship("Product", back_populates="purchases", overlaps="purchases")
 
 
 class Promotion(db.Model):
@@ -184,17 +183,3 @@ class Promotion(db.Model):
     discount_value = Column(Integer, nullable=True)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
-
-
-models_list = [
-    User,
-    Location,
-    UserLocation,
-    Product,
-    StopList,
-    StopListHistory,
-    Customer,
-    Purchase,
-    PurchaseItem,
-    Promotion,
-]

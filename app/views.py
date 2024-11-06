@@ -1,15 +1,14 @@
-# views.py
-from flask_admin import BaseView, expose
-from .models import db, models_list
+from flask_admin import AdminIndexView, expose
+from .models import Customer, Purchase
 
-class DatabaseView(BaseView):
+
+class DashboardView(AdminIndexView):
     @expose("/")
-    def index(self):
-        data = {}
-        for model in models_list:
-            model_name = model.__tablename__
-            entries = db.session.query(model).all()
-            if not entries:
-                return self.render("admin/database_view.html", data={}, message="Нет данных для отображения")
-            data[model_name] = entries
-        return self.render("admin/database_view.html", data=data)
+    def dashboard(self):
+        customer_count = Customer.query.count()
+        purchase_count = Purchase.query.count()
+        return self.render(
+            "admin/index.html",
+            customer_count=customer_count,
+            purchase_count=purchase_count,
+        )
