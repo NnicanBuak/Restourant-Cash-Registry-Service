@@ -7,9 +7,9 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "user"
 
-    id = db.Column(db.db.Integer, primary_key=True)
-    name = db.Column(db.db.String(80), unique=True, nullable=False)
-    passhash = db.Column(db.db.String(120), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    passhash = db.Column(db.String(120), nullable=False)
     is_confirmed = db.Column(db.Boolean, default=False, nullable=False)
     is_employee = db.Column(db.Boolean, default=False, nullable=False)
     is_manager = db.Column(db.Boolean, default=False, nullable=False)
@@ -53,9 +53,9 @@ class Location(db.Model):
 class UserLocation(db.Model):
     __tablename__ = "user_location"
 
-    user_id = db.Column(db.db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     location_id = db.Column(
-        db.db.Integer, db.ForeignKey("location.id"), primary_key=True
+        db.Integer, db.ForeignKey("location.id"), primary_key=True
     )
     created_at = db.Column(db.DateTime, default=db.DateTime.now(timezone.utc))
 
@@ -116,7 +116,7 @@ class Customer(db.Model):
     delivery_address = db.Column(db.String, nullable=True)
     birthday = db.Column(db.Date, nullable=True)
     block_status = db.Column(db.Boolean, default=False, nullable=False)
-    discount = db.Column(db.db.Float(asdecimal=True), default=0)
+    discount = db.Column(db.Float(asdecimal=True), default=0)
     note = db.Column(db.String, nullable=True)
     created_at = db.Column(db.DateTime, default=db.DateTime.now(timezone.utc))
 
